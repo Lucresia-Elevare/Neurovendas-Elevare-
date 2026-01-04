@@ -84,7 +84,28 @@ Esta pasta contém a **análise estratégica completa** do produto Elevare/Lucre
 
 ---
 
-### 4️⃣ [ARQUITETURA_VISUAL.md](./ARQUITETURA_VISUAL.md)
+### 4️⃣ [GUIA_TECNICO_ARQUITETURA.md](./GUIA_TECNICO_ARQUITETURA.md) 🔧 **NOVO**
+**Para**: Tech Leads, Arquitetos de Software, Desenvolvedores Seniores
+**Tempo de leitura**: 45 minutos
+
+**Conteúdo**:
+- Regra de ouro: "Orquestrador de decisões guiadas, não editor"
+- Arquitetura técnica-alvo (fluxos, não páginas)
+- Especificações detalhadas dos 3 componentes principais:
+  - `QuickCreateFlow` com state machine completa
+  - `NeuroPreset` com copyFramework estruturado
+  - `LucresIASidebar` com engine de scoring em tempo real
+- Código TypeScript detalhado para cada componente
+- Sistema de analytics obrigatório (eventos de produto)
+- Ordem correta de implementação com critérios de sucesso
+- Métrica decisiva: "Se falhar Sprint 2, para tudo"
+- Checklist técnico pré-implementação
+
+**Por que ler**: Entender a arquitetura técnica profunda, state machines, e como implementar o paradigma de "fluxo guiado" corretamente.
+
+---
+
+### 5️⃣ [ARQUITETURA_VISUAL.md](./ARQUITETURA_VISUAL.md)
 **Para**: Designers, Developers, Product Managers
 **Tempo de leitura**: 20 minutos
 
@@ -107,6 +128,15 @@ Esta pasta contém a **análise estratégica completa** do produto Elevare/Lucre
 
 ---
 
+### 6️⃣ [LEIA-ME_DOCUMENTACAO.md](./LEIA-ME_DOCUMENTACAO.md) (este arquivo)
+Guia de navegação com:
+- Percursos de leitura baseados em funções
+- Resumo dos principais conceitos
+- Descrição dos documentos
+- Lista de verificação dos próximos passos
+
+---
+
 ## 🎯 Como Navegar Esta Documentação
 
 ### Se você é...
@@ -124,9 +154,10 @@ Esta pasta contém a **análise estratégica completa** do produto Elevare/Lucre
 
 #### 💻 **Desenvolvedor / Tech Lead**
 1. Leia: [SUMARIO_EXECUTIVO.md](./SUMARIO_EXECUTIVO.md) (15min) - contexto
-2. Depois: [ROADMAP_IMPLEMENTACAO.md](./ROADMAP_IMPLEMENTACAO.md) (45min) - specs técnicas
-3. Referência: [ARQUITETURA_VISUAL.md](./ARQUITETURA_VISUAL.md) - mockups
-4. Ação: Estimar esforço → Planejar sprints → Implementar
+2. Depois: [GUIA_TECNICO_ARQUITETURA.md](./GUIA_TECNICO_ARQUITETURA.md) (45min) - arquitetura profunda
+3. Depois: [ROADMAP_IMPLEMENTACAO.md](./ROADMAP_IMPLEMENTACAO.md) (45min) - specs técnicas
+4. Referência: [ARQUITETURA_VISUAL.md](./ARQUITETURA_VISUAL.md) - mockups
+5. Ação: Estimar esforço → Planejar sprints → Implementar
 
 #### 📊 **Analista / Data Scientist**
 1. Leia: [SUMARIO_EXECUTIVO.md](./SUMARIO_EXECUTIVO.md) - métricas
@@ -206,6 +237,21 @@ Esta pasta contém a **análise estratégica completa** do produto Elevare/Lucre
 3. **Especialização > Generalização**: 100% focado em estética (não editor genérico)
 4. **Velocidade Real**: 5min do zero ao post publicado
 5. **Resultado > Processo**: Usuário quer "postar e vender", não "aprender ferramenta"
+6. **Fluxo > Feature**: UI orientada a jornada, não a botões avulsos (NOVO)
+7. **Métricas > Achismo**: Decisões baseadas em dados, não opiniões (NOVO)
+
+---
+
+## 🎯 Regra de Ouro Técnica
+
+> **"O app deixa de ser um 'editor cheio de botões' e passa a ser um orquestrador de decisões guiadas."**
+
+Tecnicamente:
+- ✅ UI orientada a **fluxo**, não a feature
+- ✅ IA acoplada ao **estado da jornada**, não acionada por botão
+- ✅ Menos telas, mais **state machine**
+
+Veja detalhes em: [GUIA_TECNICO_ARQUITETURA.md](./GUIA_TECNICO_ARQUITETURA.md)
 
 ---
 
@@ -227,13 +273,17 @@ Esta pasta contém a **análise estratégica completa** do produto Elevare/Lucre
 
 ```
 /
-├── README.md (este arquivo)
-├── SUMARIO_EXECUTIVO.md ⭐ COMECE AQUI
-├── ANALISE_ESTRATEGICA_PRODUTO.md
-├── ROADMAP_IMPLEMENTACAO.md
-├── ARQUITETURA_VISUAL.md
+├── README.md (repositório principal)
+├── LEIA-ME_DOCUMENTACAO.md (este arquivo - navegação)
+├── SUMARIO_EXECUTIVO.md ⭐ COMECE AQUI (20KB)
+├── ANALISE_ESTRATEGICA_PRODUTO.md (34KB)
+├── ROADMAP_IMPLEMENTACAO.md (42KB)
+├── GUIA_TECNICO_ARQUITETURA.md 🔧 NOVO (28KB)
+├── ARQUITETURA_VISUAL.md (22KB)
 └── ... (código-fonte da aplicação)
 ```
+
+**Total**: 155KB de documentação estratégica e técnica
 
 ---
 
