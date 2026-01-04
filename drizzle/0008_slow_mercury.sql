@@ -1,0 +1,1 @@
+ALTER TABLE `creations` ADD `tags` text;
