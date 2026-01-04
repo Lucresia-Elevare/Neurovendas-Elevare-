@@ -141,7 +141,7 @@ v1.2.3
 ### Canais de Comunicação
 - **Issues**: Para bugs, features e perguntas
 - **Discussions**: Para conversas gerais
-- **Email**: [contato@neurovendas-elevare.com]
+- **Email**: contato@neurovendas-elevare.com
 
 ### Tipos de Issues
 - 🐛 **Bug Report**: Reportar problemas

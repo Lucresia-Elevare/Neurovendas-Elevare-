@@ -88,14 +88,14 @@ Variáveis:
 ## 💡 Exemplo de Uso
 
 ### Input
-\```
+```
 Exemplo de entrada com variáveis preenchidas
-\```
+```
 
 ### Output Esperado
-\```
+```
 Exemplo do resultado esperado
-\```
+```
 
 ## 📊 Métricas de Sucesso
 Como avaliar a eficácia do prompt.

@@ -18,7 +18,7 @@ A segurança dos nossos usuários é nossa prioridade máxima. Se você descobri
 
 Em vez disso:
 
-1. **Email**: Envie detalhes para [security@neurovendas-elevare.com] (ou use GitHub Security Advisories se disponível)
+1. **Email**: Envie detalhes para security@neurovendas-elevare.com (ou use GitHub Security Advisories se disponível)
 2. **Assunto**: Use "SECURITY: [Breve descrição]"
 3. **Detalhes**: Inclua:
    - Descrição da vulnerabilidade

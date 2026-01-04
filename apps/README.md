@@ -107,17 +107,17 @@ Cada aplicação deve ter seu próprio README.md com:
 
 1. Clone o repositório
 2. Instale dependências:
-   \```bash
+   ```bash
    npm install
-   \```
+   ```
 3. Configure variáveis de ambiente:
-   \```bash
+   ```bash
    cp .env.example .env
-   \```
+   ```
 4. Inicie a aplicação:
-   \```bash
+   ```bash
    npm run dev
-   \```
+   ```
 ```
 
 ### Scripts Disponíveis
