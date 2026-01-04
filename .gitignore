@@ -1,0 +1,166 @@
+# Neurovendas-Elevare .gitignore
+
+# Sistema Operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build e Dist
+dist/
+build/
+out/
+*.js.map
+*.css.map
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+
+# Testes
+coverage/
+.nyc_output/
+*.lcov
+.jest/
+
+# Temporários
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruby
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+build/
+
+# Mobile
+*.apk
+*.aab
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Secrets e Credenciais (IMPORTANTE!)
+secrets/
+credentials/
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa*
+*.p12
+*.pfx
+
+# Arquivos grandes ou binários
+*.pdf
+*.mov
+*.mp4
+*.mp3
+*.zip
+*.tar.gz
+
+# Arquivos de backup do sistema
+*~
+\#*\#
+.#*
+
+# Arquivos específicos do projeto
+# (Adicione arquivos específicos aqui conforme necessário)
