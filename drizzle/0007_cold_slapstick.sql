@@ -1,0 +1,22 @@
+CREATE TABLE `user_templates` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`userId` int NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`description` text,
+	`format` enum('square','portrait','story') NOT NULL,
+	`model` enum('classic','bold','fade','highlight') NOT NULL,
+	`font` varchar(50) NOT NULL,
+	`fontSize` int NOT NULL,
+	`textColor` varchar(50) NOT NULL,
+	`horizontalAlign` varchar(20) NOT NULL,
+	`verticalAlign` varchar(20) NOT NULL,
+	`textOutline` int NOT NULL DEFAULT 0,
+	`fadeOverlay` int NOT NULL DEFAULT 50,
+	`blur` int NOT NULL DEFAULT 0,
+	`brightness` int NOT NULL DEFAULT 100,
+	`contrast` int NOT NULL DEFAULT 100,
+	`previewUrl` text,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `user_templates_id` PRIMARY KEY(`id`)
+);
