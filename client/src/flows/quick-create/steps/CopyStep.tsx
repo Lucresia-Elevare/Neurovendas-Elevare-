@@ -197,8 +197,9 @@ function calculateBasicScore(caption: string, preset: any): number {
   if (caption.length >= 80 && caption.length <= 500) score += 30;
   else if (caption.length >= 50) score += 15;
   
-  // Has emoji
-  if (/[\u{1F300}-\u{1F9FF}]/u.test(caption)) score += 20;
+  // Has emoji (Unicode range for emojis)
+  const emojiPattern = /[\uD83C-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27FF]/;
+  if (emojiPattern.test(caption)) score += 20;
   
   // Has CTA
   const ctaKeywords = ['agende', 'comente', 'salve', 'compartilhe', 'link'];
