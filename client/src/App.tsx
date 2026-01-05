@@ -28,6 +28,7 @@ import Postar from "./pages/Postar";
 import Resultados from "./pages/Resultados";
 import LucresIA from "./pages/LucresIA";
 import GeradorMateriais from "./pages/GeradorMateriais";
+import QuickCreateFlow from "./flows/quick-create/QuickCreateFlow";
 
 import { useAuth } from "./_core/hooks/useAuth";
 import { Button } from "./components/ui/button";
@@ -242,6 +243,7 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Studio} />
+        <Route path="/quick-create" component={QuickCreateFlow} />
         <Route path="/postar" component={Postar} />
         <Route path="/resultados" component={Resultados} />
               <Route path="/lucresia" component={LucresIA} />

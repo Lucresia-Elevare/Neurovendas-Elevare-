@@ -464,7 +464,7 @@ export default function GeradorMateriais() {
                 </div>
               )}
             </>
-          ) : (
+          ) : activeTab === "video" ? (
             <>
               <h2 className="text-xl font-semibold mb-4">Criar Vídeo (Canva)</h2>
               
@@ -573,11 +573,117 @@ export default function GeradorMateriais() {
                 </div>
               )}
             </>
-          ) : (
-            <div className="text-center py-8 text-slate-400">
-              <p>Selecione uma opção acima</p>
-            </div>
-          )}
+          ) : activeTab === "video" ? (
+            <>
+              <h2 className="text-xl font-semibold mb-4">Criar Vídeo (Canva)</h2>
+              
+              {!canvaStatusQuery.data?.connected ? (
+                <div className="space-y-4">
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <p className="text-sm text-amber-800 mb-4">Conecte sua conta Canva para criar vídeos</p>
+                    <Button
+                      onClick={() => canvaConnectMutation.mutate()}
+                      disabled={canvaConnectMutation.isPending}
+                      className="w-full"
+                    >
+                      {canvaConnectMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Conectando...
+                        </>
+                      ) : (
+                        "Conectar Canva"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <p className="text-sm text-green-800">Canva conectado com sucesso!</p>
+                  </div>
+                  
+                  <div>
+                    <Label>Tema do Vídeo</Label>
+                    <Input
+                      value={videoTheme}
+                      onChange={(e) => setVideoTheme(e.target.value)}
+                      placeholder="Ex: Tutorial de Skincare"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Tom</Label>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {(["profissional", "casual", "motivacional", "educativo"] as const).map((tone) => (
+                        <Button
+                          key={tone}
+                          variant={videoTone === tone ? "default" : "outline"}
+                          onClick={() => setVideoTone(tone)}
+                          size="sm"
+                        >
+                          {tone.charAt(0).toUpperCase() + tone.slice(1)}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label>Duração: {videoDuration}s</Label>
+                    <input
+                      type="range"
+                      min="15"
+                      max="90"
+                      step="15"
+                      value={videoDuration}
+                      onChange={(e) => setVideoDuration(Number(e.target.value))}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-slate-500">
+                      <span>15s</span>
+                      <span>90s</span>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label>Público-Alvo (Opcional)</Label>
+                    <Input
+                      value={videoAudience}
+                      onChange={(e) => setVideoAudience(e.target.value)}
+                      placeholder="Ex: Mulheres 25-40 anos"
+                    />
+                  </div>
+                  
+                  <Button
+                    onClick={() => {
+                      if (!videoTheme.trim()) {
+                        toast.error("Digite um tema para o vídeo");
+                        return;
+                      }
+                      generateVideoMutation.mutate({
+                        theme: videoTheme,
+                        tone: videoTone,
+                        duration: videoDuration,
+                        audience: videoAudience || undefined,
+                      });
+                    }}
+                    disabled={generateVideoMutation.isPending}
+                    className="w-full"
+                  >
+                    {generateVideoMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Criando no Canva...
+                      </>
+                    ) : (
+                      "Criar Vídeo"
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : null}
         </Card>
         
         {/* Painel Direito - Preview */}
