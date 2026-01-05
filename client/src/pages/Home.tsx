@@ -21,7 +21,7 @@ export default function Home() {
           </p>
           
           <div className="grid md:grid-cols-2 gap-6 mt-12">
-            <Link href="/generate-ebook">
+            <Link href="/generate-content">
               <a className="block p-8 bg-white dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-slate-200 dark:border-slate-700">
                 <div className="text-4xl mb-4">📚</div>
                 <h2 className="text-2xl font-semibold text-slate-800 dark:text-slate-100 mb-2">

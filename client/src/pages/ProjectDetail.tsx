@@ -59,7 +59,7 @@ export default function ProjectDetail({ id }: { id: string }) {
   };
 
   const handleEdit = () => {
-    navigate(`/generate-ebook?projectId=${id}`);
+    navigate(`/generate-content?projectId=${id}`);
   };
 
   if (isLoading) {

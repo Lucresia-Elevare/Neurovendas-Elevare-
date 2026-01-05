@@ -44,7 +44,7 @@ export default function Dashboard() {
             Ações Rápidas
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
-            <Link href="/generate-ebook">
+            <Link href="/generate-content">
               <a className="flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-600 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors">
                 <div className="text-2xl">➕</div>
                 <div>
