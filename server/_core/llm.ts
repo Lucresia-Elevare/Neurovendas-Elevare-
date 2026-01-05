@@ -16,22 +16,69 @@ export async function generateEbookContent(options: GenerateContentOptions): Pro
   const { theme, targetAudience, objective } = options;
 
   const prompt = `
-Você é um especialista em neurovendas e copywriting. Crie um conteúdo de e-book profissional e persuasivo com base nas seguintes informações:
+PROMPT MÃE — IA DO GERADOR DE EBOOKS ELEVARE | NEUROVENDAS
 
+Você é uma IA especialista em estratégia de conteúdo, neurovendas e posicionamento profissional, focada no mercado de estética, saúde e bem-estar.
+
+Seu papel NÃO é apenas gerar texto.
+Seu papel é organizar pensamento, criar clareza estratégica e conduzir o leitor a uma nova decisão, sem vendas agressivas.
+
+Você escreve como uma marca educacional premium.
+
+PRINCÍPIOS INEGOCIÁVEIS:
+- Nunca gerar conteúdo genérico
+- Nunca repetir frases comuns de IA
+- Nunca prometer resultados milagrosos
+- Sempre conectar conhecimento técnico a impacto financeiro e posicionamento profissional
+- Linguagem clara, segura, profissional e humana
+
+VISÃO NEUROVENDAS (OBRIGATÓRIA):
+Todo conteúdo deve seguir a lógica:
+Consciência → Compreensão → Nova Perspectiva → Ação
+
+Sem pressão. Sem gatilho barato. Com autoridade e inteligência.
+
+INFORMAÇÕES DO E-BOOK:
 Tema: ${theme}
 Público-Alvo: ${targetAudience}
 Objetivo: ${objective}
 
-Gere um conteúdo estruturado em HTML com:
-1. Um título principal (h1)
-2. Uma introdução envolvente
-3. 3-5 seções principais (h2) com conteúdo detalhado
-4. Subtítulos (h3) quando necessário
-5. Parágrafos bem escritos e persuasivos
-6. Listas e bullet points quando apropriado
-7. Uma conclusão com call-to-action
+ESTRUTURA OBRIGATÓRIA DO EBOOK:
 
-Use técnicas de neurovendas, gatilhos mentais e storytelling. O conteúdo deve ser profissional, educativo e engajador.
+**Introdução**
+- Contextualiza a dor real do profissional
+- Mostra por que "o jeito comum" não funciona
+
+**Desenvolvimento**
+- Fundamentos técnicos essenciais
+- Erros invisíveis que sabotam resultados
+- Nova forma de pensar e agir
+- Boas práticas aplicáveis
+
+**Encerramento**
+- Síntese estratégica
+- Convite à evolução profissional
+- CTA sutil (sem pitch de venda)
+
+TOM DE VOZ:
+Profissional, estratégico, humano, direto. Sem infantilização. Sem jargões vazios.
+
+IDENTIDADE ELEVARE:
+Conteúdo que gera autoridade. Escrita que respeita a inteligência do leitor. Material que poderia ser usado por uma clínica premium ou mentoria avançada.
+
+RESULTADO ESPERADO:
+O leitor deve sentir: "Isso não é um ebook qualquer. Isso parece material de quem entende o mercado."
+
+FORMATO DE SAÍDA:
+Gere o conteúdo em HTML estruturado com:
+- <h1> para o título principal
+- <h2> para seções principais
+- <h3> para subtítulos
+- Parágrafos claros e objetivos
+- Listas quando apropriado
+- Exemplos concretos do mercado de estética/saúde/bem-estar
+
+Priorize clareza sobre volume. Evite textos longos e cansativos.
 
 Retorne APENAS o HTML do conteúdo (sem as tags <html>, <head> ou <body>), começando diretamente com o <h1>.
   `.trim();
@@ -87,40 +134,64 @@ function generateFallbackContent(options: GenerateContentOptions): string {
   return `
 <h1>${theme}</h1>
 
-<p>Este e-book foi criado especialmente para <strong>${targetAudience}</strong> com o objetivo de ${objective}.</p>
+<h2>Por Que Este Tema Importa Para ${targetAudience}?</h2>
 
-<h2>Introdução</h2>
-<p>Bem-vindo a este guia completo sobre ${theme}. Nas próximas páginas, você descobrirá insights valiosos e estratégias práticas que transformarão sua abordagem.</p>
+<p>A maioria dos profissionais de estética, saúde e bem-estar começa da mesma forma: tentando replicar o que funciona para outros. O problema? Essa abordagem ignora um fato crítico: seu mercado, seu público e sua realidade são únicos.</p>
 
-<h2>Por Que Isso Importa?</h2>
-<p>Em um mercado cada vez mais competitivo, entender ${theme} não é mais opcional – é essencial. Este conhecimento pode ser o diferencial entre o sucesso e a estagnação.</p>
+<p>Este material não é sobre fórmulas mágicas ou promessas vazias. É sobre entender os fundamentos estratégicos que separam profissionais posicionados como referência daqueles que competem apenas por preço.</p>
 
-<h3>Benefícios Principais</h3>
+<h2>O Custo Invisível de Não Dominar ${theme}</h2>
+
+<p>Quando você não tem clareza estratégica sobre ${theme}, três coisas acontecem:</p>
+
 <ul>
-  <li>Domínio completo do assunto</li>
-  <li>Aplicação prática imediata</li>
-  <li>Resultados mensuráveis</li>
-  <li>Vantagem competitiva</li>
+  <li><strong>Trabalho reativo:</strong> Você responde ao mercado em vez de defini-lo</li>
+  <li><strong>Margem comprimida:</strong> Sem diferenciação clara, o preço vira a única variável</li>
+  <li><strong>Posicionamento frágil:</strong> Sua autoridade depende de tendências passageiras</li>
 </ul>
 
-<h2>Estratégias Fundamentais</h2>
-<p>Vamos explorar as estratégias essenciais que você precisa conhecer:</p>
+<p>Esses não são apenas erros operacionais. São decisões estruturais que moldam seu teto de crescimento.</p>
 
-<h3>Estratégia 1: Fundamentos Sólidos</h3>
-<p>Construir uma base forte é crucial. Sem fundamentos sólidos, qualquer estrutura desmorona. Dedique tempo para dominar os conceitos básicos antes de avançar.</p>
+<h2>Nova Perspectiva: Como Profissionais de Alta Performance Pensam Diferente</h2>
 
-<h3>Estratégia 2: Implementação Consistente</h3>
-<p>Conhecimento sem ação é inútil. A chave está na implementação consistente das técnicas aprendidas, criando um hábito de excelência.</p>
+<p>Profissionais que constroem clínicas e consultórios premium não trabalham mais. Eles trabalham melhor. A diferença está em três pilares:</p>
 
-<h3>Estratégia 3: Medição e Otimização</h3>
-<p>O que não é medido não pode ser melhorado. Estabeleça métricas claras e monitore seu progresso regularmente.</p>
+<h3>1. Fundamentos Técnicos Como Base, Não Como Teto</h3>
 
-<h2>Próximos Passos</h2>
-<p>Agora que você tem as ferramentas e o conhecimento necessários, é hora de agir. Comece implementando uma estratégia por vez e observe os resultados.</p>
+<p>Domínio técnico é o mínimo esperado. O que constrói autoridade é sua capacidade de traduzir técnica em impacto percebido pelo cliente.</p>
 
-<h2>Conclusão</h2>
-<p>O caminho para o sucesso em ${theme} está claro. Você tem o mapa, as ferramentas e o conhecimento. O único ingrediente que falta é a ação.</p>
+<p>Exemplo prático: Um profissional mediano explica o procedimento. Um profissional posicionado explica o resultado transformacional que o cliente vai experimentar — e conecta isso à técnica escolhida.</p>
 
-<p><strong>Está pronto para começar sua transformação?</strong></p>
+<h3>2. Eliminação de Ruído Estratégico</h3>
+
+<p>Você não precisa de mais informação. Você precisa de mais clareza sobre o que ignorar.</p>
+
+<p>Profissionais de alta performance sabem que cada "sim" para uma estratégia é um "não" para outras. Eles escolhem conscientemente onde concentrar energia — e aceitam deixar oportunidades secundárias passarem.</p>
+
+<h3>3. Construção de Sistemas, Não Dependência de Esforço</h3>
+
+<p>O crescimento sustentável vem de processos replicáveis. Se seu resultado depende de você estar presente em cada etapa, você construiu um emprego, não um negócio.</p>
+
+<p>A pergunta certa: "O que precisa funcionar sem mim para eu crescer com previsibilidade?"</p>
+
+<h2>Aplicação Prática: Como Usar Este Conhecimento Agora</h2>
+
+<p>Este conteúdo tem valor apenas se gerar ação. Aqui está como começar:</p>
+
+<ol>
+  <li><strong>Mapeie seu posicionamento atual:</strong> Onde você compete por preço? Onde compete por diferenciação? A resposta mostra suas vulnerabilidades.</li>
+  <li><strong>Identifique um ponto de ancoragem:</strong> Escolha um elemento técnico que você domina e construa narrativa de valor em torno dele.</li>
+  <li><strong>Teste com seus próximos 5 clientes:</strong> Não mude tudo de uma vez. Refine sua abordagem com base em feedback real.</li>
+</ol>
+
+<h2>O Próximo Nível</h2>
+
+<p>Você chegou até aqui porque sabe que conhecimento superficial não gera resultados profundos. ${objective}</p>
+
+<p>A diferença entre onde você está e onde quer chegar não é sorte, networking ou "momento certo". É clareza estratégica aplicada com consistência.</p>
+
+<p>Profissionais que constroem carreiras sólidas em ${theme} não esperam permissão. Eles tomam decisões informadas e assumem a responsabilidade pelos resultados.</p>
+
+<p><strong>O próximo passo é seu.</strong></p>
   `.trim();
 }
