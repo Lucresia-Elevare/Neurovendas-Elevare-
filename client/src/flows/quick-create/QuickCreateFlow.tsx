@@ -12,6 +12,7 @@ import PublishStep from './steps/PublishStep';
 import { Progress } from '@/components/ui/progress';
 import { trackEvent, AnalyticsEvents } from '@/lib/analytics';
 import { useLocation } from 'wouter';
+import { trpc } from '@/lib/trpc';
 
 export default function QuickCreateFlow() {
   const {
@@ -41,22 +42,49 @@ export default function QuickCreateFlow() {
   }, [state.step, state.startedAt]);
   
   const handlePublish = async (scheduleFor?: Date) => {
-    // In production, this would call tRPC to save the post
-    console.log('Publishing post:', {
-      presetId: state.presetId,
-      images: state.images,
-      caption: state.caption,
-      hashtags: state.hashtags,
-      scheduleFor,
-      engagementScore: state.engagementScore
-    });
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Reset and redirect
-    reset();
-    setLocation('/gallery');
+    try {
+      const creationTimeMs = Date.now() - state.startedAt.getTime();
+      
+      // Upload images first if not already uploaded
+      // In production, images should already be uploaded during UploadStep
+      const imageUrls = state.images?.map(img => img.preview) || [];
+      const imageKeys = state.images?.map(img => img.id) || [];
+      
+      // Create post via backend
+      const result = await trpc.quickCreate.createPost.mutate({
+        presetId: state.presetId!,
+        caption: state.caption!,
+        hashtags: state.hashtags,
+        imageUrls,
+        imageKeys,
+        engagementScore: state.engagementScore,
+        scoreBreakdown: state.scoreBreakdown,
+        sessionId: state.sessionId,
+        creationTimeMs,
+      });
+      
+      if (result.success) {
+        // Schedule if requested
+        if (scheduleFor) {
+          await trpc.quickCreate.schedulePost.mutate({
+            postId: result.postId,
+            scheduledFor: scheduleFor,
+          });
+        } else {
+          // Publish immediately
+          await trpc.quickCreate.publishNow.mutate({
+            postId: result.postId,
+          });
+        }
+        
+        // Reset and redirect
+        reset();
+        setLocation('/gallery');
+      }
+    } catch (error) {
+      console.error('Error publishing post:', error);
+      throw error;
+    }
   };
   
   const steps = ['preset', 'upload', 'copy', 'publish'];

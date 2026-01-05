@@ -3,10 +3,12 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
+import { quickCreateRouter } from "./routes/quickCreate";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
+  quickCreate: quickCreateRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -214,6 +216,48 @@ export const appRouter = router({
         return {
           url: result.url,
           key: result.key,
+        };
+      }),
+    
+    // Upload multiple images for QuickCreate (Before/After support)
+    uploadQuickCreateImages: protectedProcedure
+      .input(
+        z.object({
+          images: z.array(
+            z.object({
+              data: z.string(), // base64
+              filename: z.string(),
+              contentType: z.string(),
+            })
+          ).min(1).max(3),
+          sessionId: z.string().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const { storagePut } = await import("./storage");
+        const { nanoid } = await import("nanoid");
+        
+        const sessionId = input.sessionId || nanoid();
+        const uploadedImages: Array<{ url: string; key: string }> = [];
+        
+        // Upload all images
+        for (let i = 0; i < input.images.length; i++) {
+          const image = input.images[i];
+          const base64Data = image.data.replace(/^data:image\/\w+;base64,/, "");
+          const buffer = Buffer.from(base64Data, "base64");
+          
+          const fileKey = `users/${ctx.user.id}/quickcreate/${sessionId}/${i}-${image.filename}`;
+          const result = await storagePut(fileKey, buffer, image.contentType);
+          
+          uploadedImages.push({
+            url: result.url,
+            key: result.key,
+          });
+        }
+        
+        return {
+          images: uploadedImages,
+          sessionId,
         };
       }),
   }),

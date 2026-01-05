@@ -10,9 +10,13 @@ import { trackEvent, AnalyticsEvents } from '@/lib/analytics';
 const STEP_ORDER: QuickCreateStep[] = ['preset', 'upload', 'copy', 'publish'];
 
 export function useQuickCreateMachine() {
+  // Generate session ID
+  const sessionId = `qc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
   const [state, setState] = useState<QuickCreateState>({
     step: 'preset',
     canAdvance: false,
+    sessionId,
     startedAt: new Date(),
     stepTimings: {}
   });

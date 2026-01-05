@@ -481,3 +481,43 @@ export const canvaDesigns = mysqlTable("canva_designs", {
 
 export type CanvaDesign = typeof canvaDesigns.$inferSelect;
 export type InsertCanvaDesign = typeof canvaDesigns.$inferInsert;
+
+/**
+ * QuickCreate Posts - Posts created through the guided QuickCreate flow
+ */
+export const quickCreatePosts = mysqlTable("quick_create_posts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  
+  // NeuroPreset relationship
+  presetId: varchar("presetId", { length: 64 }).notNull(),
+  
+  // Content
+  caption: text("caption").notNull(),
+  hashtags: text("hashtags"),
+  
+  // Images (Before/After support) - stored as JSON arrays
+  imageUrls: text("imageUrls").notNull(), // JSON array of URLs
+  imageKeys: text("imageKeys").notNull(), // JSON array of S3 keys
+  
+  // Engagement scoring
+  engagementScore: int("engagementScore"),
+  scoreBreakdown: text("scoreBreakdown"), // JSON with text/visual/cta/hashtags/timing breakdown
+  
+  // Status and publishing
+  status: mysqlEnum("status", ["draft", "scheduled", "published", "failed"]).default("draft").notNull(),
+  scheduledFor: timestamp("scheduledFor"),
+  publishedAt: timestamp("publishedAt"),
+  instagramPostId: varchar("instagramPostId", { length: 128 }),
+  
+  // Session tracking for analytics
+  sessionId: varchar("sessionId", { length: 64 }),
+  creationTimeMs: int("creationTimeMs"), // Time taken to create in milliseconds
+  
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QuickCreatePost = typeof quickCreatePosts.$inferSelect;
+export type InsertQuickCreatePost = typeof quickCreatePosts.$inferInsert;

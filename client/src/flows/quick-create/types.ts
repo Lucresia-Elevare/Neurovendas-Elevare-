@@ -7,7 +7,8 @@ export type QuickCreateStep = 'preset' | 'upload' | 'copy' | 'publish';
 
 export interface ImageAsset {
   id: string;
-  url: string;
+  preview: string; // Preview URL or data URL
+  url?: string; // S3 URL after upload
   s3Key?: string;
   type: 'before' | 'after' | 'single';
   detectedProcedure?: string;
@@ -36,8 +37,16 @@ export interface QuickCreateState {
   // IA e scoring
   aiSuggestions?: AISuggestion[];
   engagementScore?: number;
+  scoreBreakdown?: {
+    text: number;
+    visual: number;
+    cta: number;
+    hashtags: number;
+    timing: number;
+  };
   
   // Analytics
+  sessionId?: string;
   startedAt: Date;
   stepTimings: Partial<Record<QuickCreateStep, number>>;
 }
