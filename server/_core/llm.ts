@@ -10,10 +10,12 @@ export interface GenerateContentOptions {
   theme: string;
   targetAudience: string;
   objective: string;
+  mainPain?: string;
+  realisticPromise?: string;
 }
 
 export async function generateEbookContent(options: GenerateContentOptions): Promise<string> {
-  const { theme, targetAudience, objective } = options;
+  const { theme, targetAudience, objective, mainPain, realisticPromise } = options;
 
   const prompt = `
 PROMPT MÃE — IA DO GERADOR DE EBOOKS ELEVARE | NEUROVENDAS
@@ -41,7 +43,7 @@ Sem pressão. Sem gatilho barato. Com autoridade e inteligência.
 INFORMAÇÕES DO E-BOOK:
 Tema: ${theme}
 Público-Alvo: ${targetAudience}
-Objetivo: ${objective}
+Objetivo: ${objective}${mainPain ? `\nDor Principal do Leitor: ${mainPain}` : ""}${realisticPromise ? `\nPromessa Realista: ${realisticPromise}` : ""}
 
 ESTRUTURA OBRIGATÓRIA DO EBOOK:
 

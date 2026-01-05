@@ -4,6 +4,8 @@ export const generateContentSchema = z.object({
   theme: z.string().min(3, "Tema deve ter no mínimo 3 caracteres"),
   targetAudience: z.string().min(3, "Público-alvo deve ter no mínimo 3 caracteres"),
   objective: z.string().min(10, "Objetivo deve ter no mínimo 10 caracteres"),
+  mainPain: z.string().min(10, "Descreva a dor principal").optional(),
+  realisticPromise: z.string().min(10, "Descreva a promessa").optional(),
 });
 
 export const generatePDFSchema = z.object({

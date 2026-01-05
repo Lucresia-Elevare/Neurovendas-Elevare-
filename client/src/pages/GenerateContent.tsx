@@ -12,6 +12,8 @@ const contentSchema = z.object({
   theme: z.string().min(3, "Tema deve ter no mínimo 3 caracteres").max(100, "Máximo 100 caracteres"),
   targetAudience: z.string().min(3, "Público-alvo deve ter no mínimo 3 caracteres").max(100, "Máximo 100 caracteres"),
   objective: z.string().min(10, "Objetivo deve ter no mínimo 10 caracteres").max(500, "Máximo 500 caracteres"),
+  mainPain: z.string().min(10, "Descreva a dor principal").max(300, "Máximo 300 caracteres").optional(),
+  realisticPromise: z.string().min(10, "Descreva a promessa").max(200, "Máximo 200 caracteres").optional(),
 });
 
 type ContentFormData = z.infer<typeof contentSchema>;
@@ -43,6 +45,8 @@ export default function GenerateContent() {
   const theme = watch("theme") || "";
   const targetAudience = watch("targetAudience") || "";
   const objective = watch("objective") || "";
+  const mainPain = watch("mainPain") || "";
+  const realisticPromise = watch("realisticPromise") || "";
 
   // Check if we're editing an existing project
   useEffect(() => {
@@ -219,7 +223,7 @@ export default function GenerateContent() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Tema do E-book *
                 <span className="ml-2 text-xs text-slate-500" title="Defina o assunto principal do seu e-book">
-                  ℹ️ O que você vai ensinar?
+                  ℹ️ O assunto central do conteúdo
                 </span>
               </label>
               <input
@@ -228,21 +232,32 @@ export default function GenerateContent() {
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white transition-colors ${
                   errors.theme ? "border-red-500" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="Digite o tema do seu e-book (ex: Como Vender Mais Usando Psicologia)"
+                placeholder="Ex: Como estruturar tratamentos estéticos que geram resultado e fidelização"
               />
               <div className="flex justify-between mt-1">
                 <span className={`text-xs ${errors.theme ? "text-red-600 dark:text-red-400" : "text-slate-500"}`}>
-                  {errors.theme ? errors.theme.message : "Mínimo 3 caracteres"}
+                  {errors.theme ? errors.theme.message : "Não é sobre procedimento, é sobre resultado"}
                 </span>
                 <span className="text-xs text-slate-400">{theme.length}/100</span>
               </div>
+              <details className="mt-2">
+                <summary className="text-xs text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">
+                  Ver mais exemplos
+                </summary>
+                <ul className="mt-2 text-xs text-slate-600 dark:text-slate-400 space-y-1 pl-4">
+                  <li>• Criomodelagem além da técnica: erros que impedem resultados reais</li>
+                  <li>• Por que sua clínica trabalha muito e lucra pouco (e como corrigir)</li>
+                  <li>• Estética profissional: da execução técnica à gestão inteligente</li>
+                  <li>• O que ninguém te conta sobre vender tratamentos estéticos com ética</li>
+                </ul>
+              </details>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Público-Alvo *
-                <span className="ml-2 text-xs text-slate-500" title="Para quem é este e-book">
-                  ℹ️ Quem vai ler?
+                <span className="ml-2 text-xs text-slate-500" title="Seja específico sobre quem vai ler">
+                  ℹ️ Para quem é este conteúdo
                 </span>
               </label>
               <input
@@ -251,37 +266,127 @@ export default function GenerateContent() {
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white transition-colors ${
                   errors.targetAudience ? "border-red-500" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="Para quem é este e-book? (ex: Empreendedores, Estudantes, Vendedores)"
+                placeholder="Ex: Esteticistas iniciantes que querem se posicionar como profissionais"
               />
               <div className="flex justify-between mt-1">
                 <span className={`text-xs ${errors.targetAudience ? "text-red-600 dark:text-red-400" : "text-slate-500"}`}>
-                  {errors.targetAudience ? errors.targetAudience.message : "Mínimo 3 caracteres"}
+                  {errors.targetAudience ? errors.targetAudience.message : "Evite respostas vagas como 'todos' ou 'mulheres'"}
                 </span>
                 <span className="text-xs text-slate-400">{targetAudience.length}/100</span>
               </div>
+              <details className="mt-2">
+                <summary className="text-xs text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">
+                  Ver mais exemplos
+                </summary>
+                <ul className="mt-2 text-xs text-slate-600 dark:text-slate-400 space-y-1 pl-4">
+                  <li>• Donas de clínica que atendem muito e faturam pouco</li>
+                  <li>• Fisioterapeutas dermato-funcionais em fase de crescimento</li>
+                  <li>• Profissionais da estética que querem parar de depender de promoções</li>
+                  <li>• Clínicas que desejam aumentar ticket médio sem perder pacientes</li>
+                </ul>
+              </details>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Objetivo *
-                <span className="ml-2 text-xs text-slate-500" title="O que o leitor vai aprender">
-                  ℹ️ Qual o resultado esperado?
+                Objetivo do E-book *
+                <span className="ml-2 text-xs text-slate-500" title="O objetivo guia toda a geração de conteúdo">
+                  ℹ️ Qual resultado você quer alcançar
                 </span>
               </label>
               <textarea
                 {...register("objective")}
-                rows={4}
+                rows={3}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white transition-colors ${
                   errors.objective ? "border-red-500" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="Descreva o objetivo do e-book (ex: Ensinar técnicas práticas de neurovendas para aumentar conversões em até 40%)"
+                placeholder="Ex: Educar o paciente e preparar para a decisão de compra"
               />
               <div className="flex justify-between mt-1">
                 <span className={`text-xs ${errors.objective ? "text-red-600 dark:text-red-400" : "text-slate-500"}`}>
-                  {errors.objective ? errors.objective.message : "Mínimo 10 caracteres"}
+                  {errors.objective ? errors.objective.message : "Objetivo claro = conteúdo estratégico"}
                 </span>
                 <span className="text-xs text-slate-400">{objective.length}/500</span>
               </div>
+              <details className="mt-2">
+                <summary className="text-xs text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">
+                  Ver mais exemplos
+                </summary>
+                <ul className="mt-2 text-xs text-slate-600 dark:text-slate-400 space-y-1 pl-4">
+                  <li>• Gerar autoridade profissional nas redes sociais</li>
+                  <li>• Explicar um tratamento de forma ética e profissional</li>
+                  <li>• Quebrar objeções comuns antes da consulta</li>
+                  <li>• Posicionar a clínica como referência em tratamentos corporais</li>
+                </ul>
+              </details>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Dor Principal do Leitor (Opcional)
+                <span className="ml-2 text-xs text-slate-500" title="Isso ativa o NeuroVendas">
+                  ℹ️ Que problema ele enfrenta?
+                </span>
+              </label>
+              <textarea
+                {...register("mainPain")}
+                rows={3}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white transition-colors ${
+                  errors.mainPain ? "border-red-500" : "border-slate-300 dark:border-slate-600"
+                }`}
+                placeholder="Ex: Falta de resultados consistentes nos tratamentos"
+              />
+              <div className="flex justify-between mt-1">
+                <span className={`text-xs ${errors.mainPain ? "text-red-600 dark:text-red-400" : "text-slate-500"}`}>
+                  {errors.mainPain ? errors.mainPain.message : "Dor clara = conteúdo cirúrgico"}
+                </span>
+                <span className="text-xs text-slate-400">{mainPain.length}/300</span>
+              </div>
+              <details className="mt-2">
+                <summary className="text-xs text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">
+                  Ver mais exemplos de dores
+                </summary>
+                <ul className="mt-2 text-xs text-slate-600 dark:text-slate-400 space-y-1 pl-4">
+                  <li>• Dificuldade em explicar o valor do procedimento ao paciente</li>
+                  <li>• Concorrência baseada apenas em preço</li>
+                  <li>• Insegurança profissional mesmo tendo formação</li>
+                  <li>• Baixa conversão de avaliações em vendas</li>
+                </ul>
+              </details>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Promessa Realista (Opcional)
+                <span className="ml-2 text-xs text-slate-500" title="Sem milagres - apenas evolução">
+                  ℹ️ O que o leitor vai alcançar
+                </span>
+              </label>
+              <textarea
+                {...register("realisticPromise")}
+                rows={2}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white transition-colors ${
+                  errors.realisticPromise ? "border-red-500" : "border-slate-300 dark:border-slate-600"
+                }`}
+                placeholder="Ex: Entender como estruturar tratamentos com mais previsibilidade"
+              />
+              <div className="flex justify-between mt-1">
+                <span className={`text-xs ${errors.realisticPromise ? "text-red-600 dark:text-red-400" : "text-slate-500"}`}>
+                  {errors.realisticPromise ? errors.realisticPromise.message : "Promessa Elevare = evolução, não ilusão"}
+                </span>
+                <span className="text-xs text-slate-400">{realisticPromise.length}/200</span>
+              </div>
+              <details className="mt-2">
+                <summary className="text-xs text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">
+                  Ver exemplos de promessas realistas
+                </summary>
+                <ul className="mt-2 text-xs text-slate-600 dark:text-slate-400 space-y-1 pl-4">
+                  <li>• Aprender a se posicionar com mais segurança profissional</li>
+                  <li>• Organizar a comunicação com o paciente de forma ética</li>
+                  <li>• Evitar erros comuns que custam tempo e dinheiro</li>
+                  <li>• Melhorar a percepção de valor do seu trabalho</li>
+                </ul>
+              </details>
             </div>
 
             <button
