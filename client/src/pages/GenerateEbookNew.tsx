@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import ProgressStepper from "../components/ProgressStepper";
+import { useToast } from "../components/Toast";
 
 // Zod schemas for validation
 const step1Schema = z.object({
@@ -29,24 +30,78 @@ export default function GenerateEbookNew() {
   const [error, setError] = useState<string | null>(null);
   const [generatedContent, setGeneratedContent] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<"educational" | "marketing" | "storytelling">("educational");
+  const [projectData, setProjectData] = useState<{
+    theme?: string;
+    targetAudience?: string;
+    objective?: string;
+  }>({});
+  const { showToast, ToastComponent } = useToast();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
   });
 
-  // Check for projectId in query string
+  // Check for projectId in query string and load existing project data
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("projectId");
     if (id) {
       setProjectId(id);
-      // In edit mode, would load existing data here
+      loadProjectData(id);
     }
   }, []);
+
+  // Load existing project data when in edit mode
+  const loadProjectData = async (id: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/trpc/ebooks.getProjectById", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input: { id },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load project");
+      }
+
+      const result = await response.json();
+      
+      // Pre-fill form with existing data
+      if (result.theme) {
+        setValue("theme", result.theme);
+        setProjectData((prev) => ({ ...prev, theme: result.theme }));
+      }
+      if (result.targetAudience) {
+        setValue("targetAudience", result.targetAudience);
+        setProjectData((prev) => ({ ...prev, targetAudience: result.targetAudience }));
+      }
+      if (result.objective) {
+        setValue("objective", result.objective);
+        setProjectData((prev) => ({ ...prev, objective: result.objective }));
+      }
+
+      // Load generated content if it exists
+      if (result.generatedContent?.content) {
+        setGeneratedContent(result.generatedContent.content);
+        setCurrentStep(2); // Skip to step 2 if content already exists
+      }
+    } catch (err) {
+      console.error("Error loading project:", err);
+      setError("Erro ao carregar projeto. Começando do zero.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleStep1Submit = async (data: Step1Data) => {
     setIsLoading(true);
@@ -141,9 +196,10 @@ export default function GenerateEbookNew() {
         window.open(result.pdfUrl, "_blank");
       }
 
-      alert("PDF gerado com sucesso!");
+      showToast("PDF gerado com sucesso!", "success");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao gerar PDF");
+      showToast("Erro ao gerar PDF", "error");
     } finally {
       setIsLoading(false);
     }
@@ -151,6 +207,7 @@ export default function GenerateEbookNew() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6">
+      {ToastComponent}
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">

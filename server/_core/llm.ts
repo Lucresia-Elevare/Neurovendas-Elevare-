@@ -71,7 +71,12 @@ Retorne APENAS o HTML do conte√∫do (sem as tags <html>, <head> ou <body>), come√
   } catch (error) {
     console.error("Error generating content with LLM:", error);
     
-    // Fallback content for development/testing
+    // In production, throw error instead of using fallback
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Failed to generate content. Please try again.");
+    }
+    
+    // Fallback content for development/testing only
     return generateFallbackContent(options);
   }
 }

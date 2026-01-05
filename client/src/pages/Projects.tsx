@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { useToast } from "../components/Toast";
+import { useConfirmDialog } from "../components/ConfirmDialog";
 
 interface Project {
   id: string;
@@ -16,6 +18,8 @@ export default function Projects() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { showToast, ToastComponent } = useToast();
+  const { showConfirm, DialogComponent } = useConfirmDialog();
 
   useEffect(() => {
     loadProjects();
@@ -53,35 +57,37 @@ export default function Projects() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Tem certeza que deseja excluir este projeto?")) {
-      return;
-    }
+    showConfirm(
+      "Confirmar Exclusão",
+      "Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.",
+      async () => {
+        setDeletingId(id);
 
-    setDeletingId(id);
+        try {
+          const response = await fetch("/trpc/ebooks.deleteProject", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              input: { id },
+            }),
+          });
 
-    try {
-      const response = await fetch("/trpc/ebooks.deleteProject", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          input: { id },
-        }),
-      });
+          if (!response.ok) {
+            throw new Error("Failed to delete project");
+          }
 
-      if (!response.ok) {
-        throw new Error("Failed to delete project");
+          // Remove from list
+          setProjects(projects.filter((p) => p.id !== id));
+          showToast("Projeto excluído com sucesso!", "success");
+        } catch (err) {
+          showToast(err instanceof Error ? err.message : "Erro ao excluir projeto", "error");
+        } finally {
+          setDeletingId(null);
+        }
       }
-
-      // Remove from list
-      setProjects(projects.filter((p) => p.id !== id));
-      alert("Projeto excluído com sucesso!");
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Erro ao excluir projeto");
-    } finally {
-      setDeletingId(null);
-    }
+    );
   };
 
   const getStatusBadge = (status: Project["status"]) => {
@@ -117,6 +123,8 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6">
+      {ToastComponent}
+      {DialogComponent}
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

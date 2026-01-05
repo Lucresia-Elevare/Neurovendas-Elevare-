@@ -17,8 +17,11 @@ import { renderEbookHTML } from "../_core/ebookRenderer.ts";
 import { generatePDFFromHTML } from "../_core/htmlToPdf.ts";
 import { storagePut } from "../storage.ts";
 
-// Initialize tRPC
-const t = initTRPC.context<{ userId?: string }>().create();
+// Create tRPC context type
+type Context = { userId?: string };
+
+// Initialize tRPC (shared initialization)
+const t = initTRPC.context<Context>().create();
 
 const publicProcedure = t.procedure;
 const protectedProcedure = t.procedure.use(async (opts) => {

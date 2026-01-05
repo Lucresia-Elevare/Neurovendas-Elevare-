@@ -15,8 +15,8 @@ export function parseHTML(htmlString: string): ParsedContent {
   const dom = new JSDOM(htmlString);
   const document = dom.window.document;
 
-  // Extract text content
-  const text = document.body.textContent || "";
+  // Extract text content safely
+  const text = document.body?.textContent || document.textContent || "";
 
   // Extract headings
   const headings: Array<{ level: number; text: string }> = [];
