@@ -3,8 +3,6 @@ import { useAuth } from "./_core/hooks/useAuth";
 import Home from "./pages/Home";
 import GenerateContent from "./pages/GenerateContent";
 import GenerateEbookNew from "./pages/GenerateEbookNew";
-import GenerateCover from "./pages/GenerateCover";
-import GenerateAudiobook from "./pages/GenerateAudiobook";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import Dashboard from "./pages/Dashboard";
@@ -40,12 +38,6 @@ export default function App() {
         </Route>
         <Route path="/generate-ebook-new">
           {() => <ProtectedRoute component={GenerateEbookNew} />}
-        </Route>
-        <Route path="/generate-cover">
-          {() => <ProtectedRoute component={GenerateCover} />}
-        </Route>
-        <Route path="/generate-audiobook">
-          {() => <ProtectedRoute component={GenerateAudiobook} />}
         </Route>
         
         {/* Legacy route - redirect to new flow */}
