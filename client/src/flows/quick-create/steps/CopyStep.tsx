@@ -1,28 +1,73 @@
 /**
  * CopyStep - Step 3 of QuickCreate
- * User writes copy with AI assistance
+ * User writes copy with AI assistance (with real OpenAI integration)
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
 import { trackEvent, AnalyticsEvents } from '@/lib/analytics';
 import type { ImageAsset } from '../types';
 import { getPresetById } from '@shared/neuroPresets';
+import { trpc } from '@/lib/trpc';
 
 interface CopyStepProps {
   presetId: string;
   images: ImageAsset[];
-  onComplete: (caption: string, hashtags: string[], score: number) => void;
+  onComplete: (caption: string, hashtags: string[], score: number, scoreBreakdown: any) => void;
   onBack: () => void;
 }
 
 export default function CopyStep({ presetId, images, onComplete, onBack }: CopyStepProps) {
   const [caption, setCaption] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [engagementScore, setEngagementScore] = useState<number>(0);
+  const [scoreBreakdown, setScoreBreakdown] = useState<any>(null);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const preset = getPresetById(presetId);
+  
+  // Real-time engagement analysis with debouncing
+  useEffect(() => {
+    if (caption.length < 20) {
+      setEngagementScore(0);
+      setScoreBreakdown(null);
+      setSuggestions([]);
+      return;
+    }
+    
+    const timeoutId = setTimeout(async () => {
+      await analyzeCaption();
+    }, 1000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [caption, images]);
+  
+  const analyzeCaption = async () => {
+    if (caption.length < 20) return;
+    
+    setAnalyzing(true);
+    try {
+      const analysis = await trpc.quickCreate.analyzeContent.mutate({
+        presetId,
+        caption,
+        imageUrls: images.map(img => img.url || img.preview),
+      });
+      
+      setEngagementScore(analysis.total);
+      setScoreBreakdown(analysis);
+      setSuggestions(analysis.suggestions || []);
+    } catch (error) {
+      console.error('Analysis error:', error);
+      // Fallback to basic scoring
+      const score = calculateBasicScore(caption, preset);
+      setEngagementScore(score);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
   
   const handleGenerate = async () => {
     if (!preset) return;
@@ -34,35 +79,63 @@ export default function CopyStep({ presetId, images, onComplete, onBack }: CopyS
     });
     
     try {
-      // Simular geração de IA (em produção, chamaria tRPC)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Real AI generation using OpenAI
+      const result = await trpc.quickCreate.generateCaption.mutate({
+        presetId,
+        userContext: undefined,
+        imageDescriptions: images.map((_img, idx) => `Image ${idx + 1}`),
+      });
       
-      const generatedCaption = generateCaptionFromPreset(preset);
-      setCaption(generatedCaption);
+      setCaption(result.caption);
+      setEngagementScore(result.engagementPrediction || 0);
       
       trackEvent(AnalyticsEvents.IA_SUGGESTION_APPLIED, {
         presetId,
-        type: 'copy_generation'
+        type: 'copy_generation',
+        score: result.engagementPrediction,
       });
     } catch (error) {
       console.error('Generation error:', error);
+      // Fallback to template-based generation
+      const generatedCaption = generateCaptionFromPreset(preset);
+      setCaption(generatedCaption);
     } finally {
       setGenerating(false);
     }
   };
   
+  const handleApplySuggestion = async (suggestion: any) => {
+    try {
+      const result = await trpc.quickCreate.applySuggestion.mutate({
+        caption,
+        suggestionType: suggestion.type,
+        suggestionAction: suggestion.action,
+      });
+      
+      setCaption(result.updatedCaption);
+      setEngagementScore(result.newScore);
+      
+      trackEvent(AnalyticsEvents.IA_SUGGESTION_APPLIED, {
+        presetId,
+        type: suggestion.type,
+        impact: suggestion.impact,
+      });
+    } catch (error) {
+      console.error('Apply suggestion error:', error);
+    }
+  };
+  
   const handleContinue = () => {
     const hashtags = extractHashtags(caption);
-    const score = calculateBasicScore(caption, preset);
     
     trackEvent(AnalyticsEvents.COPY_GENERATED, {
       presetId,
       length: caption.length,
       hashtagCount: hashtags.length,
-      score
+      score: engagementScore,
     });
     
-    onComplete(caption, hashtags, score);
+    onComplete(caption, hashtags, engagementScore, scoreBreakdown);
   };
   
   const canContinue = caption.length >= 20;
@@ -98,14 +171,14 @@ export default function CopyStep({ presetId, images, onComplete, onBack }: CopyS
                 disabled={generating}
               >
                 <Sparkles className="w-4 h-4 mr-2" />
-                {generating ? 'Gerando...' : 'Gerar com IA'}
+                {generating ? 'Gerando...' : 'Gerar com LucresIA'}
               </Button>
             </div>
             
             <Textarea
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              placeholder="Digite sua legenda aqui ou clique em 'Gerar com IA'..."
+              placeholder="Digite sua legenda aqui ou clique em 'Gerar com LucresIA'..."
               className="min-h-[300px] resize-none"
             />
             
@@ -113,13 +186,63 @@ export default function CopyStep({ presetId, images, onComplete, onBack }: CopyS
               <span className="text-sm text-slate-500">
                 {caption.length} caracteres
               </span>
-              {canContinue && (
-                <span className="text-sm text-green-600 font-medium">
-                  ✓ Legenda válida
-                </span>
-              )}
+              <div className="flex items-center gap-4">
+                {analyzing && (
+                  <span className="text-sm text-slate-400">
+                    Analisando...
+                  </span>
+                )}
+                {engagementScore > 0 && (
+                  <span className={`text-sm font-medium flex items-center gap-1 ${
+                    engagementScore >= 80 ? 'text-green-600' :
+                    engagementScore >= 60 ? 'text-yellow-600' :
+                    'text-orange-600'
+                  }`}>
+                    <TrendingUp className="w-4 h-4" />
+                    {engagementScore}% engajamento
+                  </span>
+                )}
+                {canContinue && (
+                  <span className="text-sm text-green-600 font-medium">
+                    ✓ Legenda válida
+                  </span>
+                )}
+              </div>
             </div>
           </Card>
+          
+          {/* AI Suggestions */}
+          {suggestions.length > 0 && (
+            <Card className="p-4 border-purple-200 bg-purple-50">
+              <h3 className="font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Sugestões da LucresIA
+              </h3>
+              <div className="space-y-2">
+                {suggestions.slice(0, 3).map((suggestion, idx) => (
+                  <div 
+                    key={idx} 
+                    className="flex items-center justify-between bg-white p-3 rounded-lg border border-purple-200"
+                  >
+                    <div className="flex-1">
+                      <p className="text-sm text-slate-700">{suggestion.action}</p>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Impacto previsto: {suggestion.impact}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-purple-600 hover:text-purple-700"
+                      onClick={() => handleApplySuggestion(suggestion)}
+                    >
+                      Aplicar
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
           
           <Button 
             className="w-full" 
@@ -155,13 +278,43 @@ export default function CopyStep({ presetId, images, onComplete, onBack }: CopyS
                 </div>
               </Card>
               
-              <Card className="p-4 bg-cyan-50 border-cyan-200">
-                <h3 className="font-semibold text-cyan-900 mb-2">
+              {scoreBreakdown && (
+                <Card className="p-4 bg-cyan-50 border-cyan-200">
+                  <h3 className="font-semibold text-cyan-900 mb-2">
+                    Análise Detalhada
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-cyan-800">Texto:</span>
+                      <span className="font-medium text-cyan-900">{scoreBreakdown.text?.score || 0}%</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-cyan-800">Visual:</span>
+                      <span className="font-medium text-cyan-900">{scoreBreakdown.visual?.score || 0}%</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-cyan-800">CTA:</span>
+                      <span className="font-medium text-cyan-900">{scoreBreakdown.cta?.score || 0}%</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-cyan-800">Hashtags:</span>
+                      <span className="font-medium text-cyan-900">{scoreBreakdown.hashtags?.score || 0}%</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-cyan-800">Timing:</span>
+                      <span className="font-medium text-cyan-900">{scoreBreakdown.timing?.score || 0}%</span>
+                    </div>
+                  </div>
+                </Card>
+              )}
+              
+              <Card className="p-4 bg-slate-50 border-slate-200">
+                <h3 className="font-semibold text-slate-900 mb-2">
                   Exemplos
                 </h3>
                 <ul className="space-y-2">
                   {preset.examples.map((ex, i) => (
-                    <li key={i} className="text-sm text-cyan-800">
+                    <li key={i} className="text-sm text-slate-700">
                       "{ex}"
                     </li>
                   ))}

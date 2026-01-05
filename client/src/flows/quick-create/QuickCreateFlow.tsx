@@ -165,11 +165,12 @@ export default function QuickCreateFlow() {
             <CopyStep
               presetId={state.presetId!}
               images={state.images!}
-              onComplete={(caption, hashtags, score) => {
+              onComplete={(caption, hashtags, score, scoreBreakdown) => {
                 updateState({ 
                   caption, 
                   hashtags, 
-                  engagementScore: score 
+                  engagementScore: score,
+                  scoreBreakdown
                 });
                 nextStep();
               }}

@@ -15,10 +15,13 @@ export const AnalyticsEvents = {
   COPY_GENERATED: 'copy_generated',
   POST_PUBLISHED: 'post_published',
   
-  // IA
+  // IA - Sprint 2 additions
   IA_SUGGESTION_SHOWN: 'ia_suggestion_shown',
   IA_SUGGESTION_APPLIED: 'ia_suggestion_applied',
   IA_SUGGESTION_DISMISSED: 'ia_suggestion_dismissed',
+  AI_CAPTION_GENERATED: 'ai_caption_generated',
+  AI_CAPTION_ACCEPTED: 'ai_caption_accepted',
+  AI_SUGGESTION_ACCEPTED: 'ai_suggestion_accepted',
   
   // Drop-offs
   DROP_OFF_PRESET: 'drop_off_step_preset',

@@ -125,7 +125,7 @@ export default function PublishStep({ state, onPublish, onBack }: PublishStepPro
         </div>
         
         <div className="space-y-4">
-          {/* Score */}
+          {/* Score with Detailed Breakdown */}
           {state.engagementScore !== undefined && (
             <Card className="p-4">
               <h3 className="font-semibold text-slate-900 mb-3">
@@ -136,17 +136,51 @@ export default function PublishStep({ state, onPublish, onBack }: PublishStepPro
                   {state.engagementScore}%
                 </div>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-3">
+              <div className="w-full bg-slate-200 rounded-full h-3 mb-4">
                 <div 
                   className="bg-gradient-to-r from-purple-600 to-cyan-500 h-3 rounded-full transition-all"
                   style={{ width: `${state.engagementScore}%` }}
                 />
               </div>
+              
+              {/* Detailed breakdown */}
+              {state.scoreBreakdown && (
+                <div className="space-y-2 mb-3 border-t pt-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">📝 Texto:</span>
+                    <span className="font-medium">{state.scoreBreakdown.text}%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">🖼️ Visual:</span>
+                    <span className="font-medium">{state.scoreBreakdown.visual}%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">📞 CTA:</span>
+                    <span className="font-medium">{state.scoreBreakdown.cta}%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">#️⃣ Hashtags:</span>
+                    <span className="font-medium">{state.scoreBreakdown.hashtags}%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">⏰ Timing:</span>
+                    <span className="font-medium">{state.scoreBreakdown.timing}%</span>
+                  </div>
+                </div>
+              )}
+              
               <p className="text-sm text-slate-600 mt-3 text-center">
                 {state.engagementScore >= 80 && '🎉 Excelente! Alta chance de viralizar'}
                 {state.engagementScore >= 60 && state.engagementScore < 80 && '👍 Bom! Pronto para publicar'}
                 {state.engagementScore < 60 && '⚠️ Pode melhorar. Considere ajustes'}
               </p>
+              
+              {/* Best time to post */}
+              <div className="mt-3 p-2 bg-cyan-50 border border-cyan-200 rounded text-center">
+                <p className="text-xs font-medium text-cyan-900">
+                  ⏰ Melhor horário: 19h-21h (Tue-Thu)
+                </p>
+              </div>
             </Card>
           )}
           

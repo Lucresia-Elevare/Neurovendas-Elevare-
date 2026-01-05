@@ -386,4 +386,111 @@ export const quickCreateRouter = router({
       
       return { success: true };
     }),
+  
+  /**
+   * Generate AI caption using OpenAI
+   * Uses preset-specific NeuroVendas frameworks
+   */
+  generateCaption: protectedProcedure
+    .input(
+      z.object({
+        presetId: z.string().min(1),
+        userContext: z.string().optional(),
+        imageDescriptions: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { generateCaption } = await import("../_core/aiCaptionGenerator");
+      
+      const result = await generateCaption({
+        presetId: input.presetId,
+        userContext: input.userContext,
+        imageDescriptions: input.imageDescriptions,
+      });
+      
+      return result;
+    }),
+  
+  /**
+   * Analyze content for engagement score
+   * Returns detailed breakdown and actionable suggestions
+   */
+  analyzeContent: protectedProcedure
+    .input(
+      z.object({
+        presetId: z.string().min(1),
+        caption: z.string().min(1),
+        imageUrls: z.array(z.string().url()).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { calculateEngagementScore } = await import("../_core/engagementScorer");
+      
+      const analysis = await calculateEngagementScore({
+        caption: input.caption,
+        imageCount: input.imageUrls?.length || 0,
+        presetId: input.presetId,
+      });
+      
+      return analysis;
+    }),
+  
+  /**
+   * Apply AI suggestion to caption
+   * Tracks suggestion acceptance for analytics
+   */
+  applySuggestion: protectedProcedure
+    .input(
+      z.object({
+        caption: z.string(),
+        suggestionType: z.enum(['text', 'visual', 'cta', 'hashtags', 'timing']),
+        suggestionAction: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      // Apply suggestion logic based on type
+      let updatedCaption = input.caption;
+      
+      switch (input.suggestionType) {
+        case 'cta':
+          // Move CTA to beginning or make it more prominent
+          if (input.suggestionAction.includes('Move CTA')) {
+            const ctaMatch = updatedCaption.match(/(📞|📲|💬|📩|🔗|👉).*?(agenda|agende|link|bio|comente|compartilhe)/i);
+            if (ctaMatch) {
+              const cta = ctaMatch[0];
+              updatedCaption = updatedCaption.replace(cta, '').trim();
+              updatedCaption = `${cta}\n\n${updatedCaption}`;
+            }
+          }
+          break;
+        
+        case 'hashtags':
+          // Add suggested hashtag
+          const hashtagMatch = input.suggestionAction.match(/#\w+/);
+          if (hashtagMatch && !updatedCaption.includes(hashtagMatch[0])) {
+            updatedCaption += ` ${hashtagMatch[0]}`;
+          }
+          break;
+        
+        case 'text':
+          // Add emoji or improve hook
+          if (input.suggestionAction.includes('emoji') && !updatedCaption.match(/[\u{1F300}-\u{1F9FF}]/u)) {
+            updatedCaption = `✨ ${updatedCaption}`;
+          }
+          break;
+      }
+      
+      // Recalculate score
+      const { calculateEngagementScore } = await import("../_core/engagementScorer");
+      const newScore = await calculateEngagementScore({
+        caption: updatedCaption,
+        imageCount: 1, // Assume at least 1 image
+        presetId: '', // Not needed for score calculation
+      });
+      
+      return {
+        updatedCaption,
+        newScore: newScore.total,
+      };
+    }),
 });
