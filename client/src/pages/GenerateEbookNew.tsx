@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import ProgressStepper from "../components/ProgressStepper";
 import Breadcrumb from "../components/Breadcrumb";
 import { useToast } from "../components/Toast";
+import SuccessModal from "../components/SuccessModal";
 
 const steps = [
   { number: 1, title: "Conteúdo", description: "Tema e objetivo", href: "/generate-content" },
@@ -21,12 +22,15 @@ function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
 export default function GenerateEbookNew() {
   const [, setLocation] = useLocation();
   const [projectId, setProjectId] = useState<string | undefined>();
+  const [projectTitle, setProjectTitle] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [generatedContent, setGeneratedContent] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<"educational" | "marketing" | "storytelling">("educational");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [pdfStats, setPdfStats] = useState<{pages: number; words: number} | null>(null);
   const { showToast, ToastComponent } = useToast();
 
   // Load projectId from URL and fetch project data
@@ -108,6 +112,11 @@ export default function GenerateEbookNew() {
       }
 
       const result = await response.json();
+
+      // Save project title
+      if (result.title) {
+        setProjectTitle(result.title);
+      }
 
       // Load generated content if it exists
       if (result.generatedContent?.content) {
@@ -192,10 +201,14 @@ export default function GenerateEbookNew() {
 
       const result = await response.json();
 
-      showToast("PDF gerado com sucesso!", "success");
+      // Calculate stats
+      const words = generatedContent.split(/\s+/).length;
+      const pages = Math.ceil(words / 300); // Estimate: ~300 words per page
 
-      // Redirect to projects page (final step)
-      setTimeout(() => setLocation("/projects"), 1000);
+      setPdfStats({ words, pages });
+      setShowSuccessModal(true);
+
+      showToast("PDF gerado com sucesso!", "success");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erro ao gerar PDF";
       setError(errorMessage);
@@ -408,6 +421,24 @@ export default function GenerateEbookNew() {
           </div>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          setLocation("/projects");
+        }}
+        title={projectTitle || "E-book Profissional"}
+        stats={pdfStats ? {
+          pages: pdfStats.pages,
+          words: pdfStats.words,
+          template: selectedTemplate,
+        } : undefined}
+        onViewProjects={() => setLocation("/projects")}
+      />
+
+      <ToastComponent />
     </div>
   );
 }

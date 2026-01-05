@@ -29,6 +29,7 @@ export default function GenerateContent() {
   const [error, setError] = useState<string | null>(null);
   const [projectId, setProjectId] = useState<string | undefined>();
   const [retryAction, setRetryAction] = useState<(() => void) | null>(null);
+  const [loadingStage, setLoadingStage] = useState<string>("");
   const { showToast, ToastComponent } = useToast();
 
   const {
@@ -64,8 +65,14 @@ export default function GenerateContent() {
     setIsLoading(true);
     setError(null);
     setRetryAction(null);
+    setLoadingStage("Estruturando introdução estratégica...");
 
     try {
+      // Simulate progressive loading stages
+      setTimeout(() => setLoadingStage("Identificando erros invisíveis do mercado..."), 10000);
+      setTimeout(() => setLoadingStage("Criando nova perspectiva profissional..."), 20000);
+      setTimeout(() => setLoadingStage("Finalizando chamada para ação sutil..."), 40000);
+      
       // Generate content using LLM
       const contentResponse = await fetch("/trpc/ebooks.generateStructuredContent", {
         method: "POST",
@@ -145,7 +152,7 @@ export default function GenerateContent() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-4 md:p-6">
       {ToastComponent}
       
-      {/* Loading overlay with better feedback */}
+      {/* Loading overlay with progressive stage updates */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-slate-800 p-8 rounded-lg text-center max-w-md shadow-2xl">
@@ -158,6 +165,12 @@ export default function GenerateContent() {
             <h3 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">
               Gerando Conteúdo com IA
             </h3>
+            {loadingStage && (
+              <div className="mb-4 flex items-center justify-center gap-2 text-indigo-600 dark:text-indigo-400 animate-pulse">
+                <span className="text-lg">📚</span>
+                <p className="text-sm font-medium">{loadingStage}</p>
+              </div>
+            )}
             <p className="text-slate-600 dark:text-slate-400 mb-4">
               Isso pode levar de 30 a 60 segundos...
             </p>
