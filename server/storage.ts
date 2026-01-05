@@ -15,7 +15,7 @@ export async function storagePut(
     
     const blob = typeof data === "string" 
       ? new Blob([data], { type: contentType })
-      : new Blob([data], { type: contentType });
+      : new Blob([new Uint8Array(data)], { type: contentType });
     
     formData.append("file", blob, key);
     formData.append("key", key);

@@ -2,20 +2,20 @@ import { z } from "zod";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { eq, and, desc, like, or } from "drizzle-orm";
-import { db } from "./db.js";
-import { projects, generatedContent, users } from "../drizzle/schema.js";
+import { db } from "../db.ts";
+import { projects, generatedContent, users } from "../../drizzle/schema.ts";
 import {
   generateContentSchema,
   generatePDFSchema,
   saveProjectSchema,
   getProjectsSchema,
   deleteProjectSchema,
-} from "../shared/ebookSchema.js";
-import { generateEbookContent } from "./_core/llm.js";
-import { parseHTML } from "./_core/htmlParser.js";
-import { renderEbookHTML } from "./_core/ebookRenderer.js";
-import { generatePDFFromHTML } from "./_core/htmlToPdf.js";
-import { storagePut } from "./storage.js";
+} from "../../shared/ebookSchema.ts";
+import { generateEbookContent } from "../_core/llm.ts";
+import { parseHTML } from "../_core/htmlParser.ts";
+import { renderEbookHTML } from "../_core/ebookRenderer.ts";
+import { generatePDFFromHTML } from "../_core/htmlToPdf.ts";
+import { storagePut } from "../storage.ts";
 
 // Initialize tRPC
 const t = initTRPC.context<{ userId?: string }>().create();

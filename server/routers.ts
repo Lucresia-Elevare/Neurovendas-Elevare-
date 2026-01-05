@@ -1,5 +1,5 @@
 import { initTRPC } from "@trpc/server";
-import { ebooksRouter } from "./routes/ebooks.router.js";
+import { ebooksRouter } from "./routes/ebooks.router.ts";
 
 const t = initTRPC.context<{ userId?: string }>().create();
 

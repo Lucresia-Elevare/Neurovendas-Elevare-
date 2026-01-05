@@ -1,6 +1,6 @@
 import express from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "../routers.js";
+import { appRouter } from "../routers.ts";
 import * as cookie from "cookie";
 
 const app = express();
